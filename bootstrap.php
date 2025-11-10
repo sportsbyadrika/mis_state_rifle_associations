@@ -9,6 +9,11 @@ if (!file_exists($autoloadPath)) {
 
 require_once $autoloadPath;
 
+$helpersPath = __DIR__ . '/app/helpers.php';
+if (file_exists($helpersPath)) {
+    require_once $helpersPath;
+}
+
 use Dotenv\Dotenv;
 
 if (file_exists(__DIR__ . '/.env')) {
