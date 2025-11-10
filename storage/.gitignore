@@ -1,0 +1,4 @@
+# Ignore everything in storage except this file and logs directory
+*
+!.gitignore
+!logs/

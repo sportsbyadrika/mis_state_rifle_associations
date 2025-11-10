@@ -1,0 +1,10 @@
+/vendor/
+/.env
+/storage/*
+!/storage/.gitignore
+!/storage/logs
+/storage/logs/*
+!/storage/logs/.gitignore
+/node_modules/
+/.idea/
+.DS_Store
