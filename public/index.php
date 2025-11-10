@@ -10,6 +10,7 @@ use App\Controllers\OrganizationController;
 use App\Controllers\MemberController;
 use App\Controllers\FinanceController;
 use App\Controllers\ElectionController;
+use App\Controllers\ProfileController;
 use App\Controllers\PublicController;
 
 $router = new Router();
@@ -19,6 +20,7 @@ $organizationController = new OrganizationController();
 $memberController = new MemberController();
 $financeController = new FinanceController();
 $electionController = new ElectionController();
+$profileController = new ProfileController();
 $publicController = new PublicController();
 
 $router->get('/login', fn() => $authController->showLogin());
@@ -45,6 +47,9 @@ $router->get('/memberships/apply', fn() => $memberController->apply());
 $router->post('/memberships', fn() => $memberController->store());
 $router->get('/finance', fn() => $financeController->index());
 $router->get('/elections', fn() => $electionController->index());
+$router->get('/profile', fn() => $profileController->edit());
+$router->post('/profile', fn() => $profileController->update());
+
 
 $requestUri = $_SERVER['REQUEST_URI'] ?? '/';
 $scriptName = $_SERVER['SCRIPT_NAME'] ?? '';
