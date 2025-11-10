@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Core\Model;
 use App\Core\Hasher;
+use PDO;
 
 class Organization extends Model
 {
