@@ -40,4 +40,19 @@ $router->post('/memberships', fn() => $memberController->store());
 $router->get('/finance', fn() => $financeController->index());
 $router->get('/elections', fn() => $electionController->index());
 
-$router->dispatch($_SERVER['REQUEST_URI'] ?? '/', $_SERVER['REQUEST_METHOD'] ?? 'GET');
+$requestUri = $_SERVER['REQUEST_URI'] ?? '/';
+$scriptName = $_SERVER['SCRIPT_NAME'] ?? '';
+$scriptDir = str_replace('\\', '/', dirname($scriptName));
+$scriptDir = $scriptDir === '/' ? '' : rtrim($scriptDir, '/');
+
+if (str_contains($requestUri, '?')) {
+    $requestPath = strstr($requestUri, '?', true);
+} else {
+    $requestPath = $requestUri;
+}
+
+if ($scriptDir !== '' && str_starts_with($requestPath, $scriptDir)) {
+    $requestPath = substr($requestPath, strlen($scriptDir)) ?: '/';
+}
+
+$router->dispatch($requestPath ?: '/', $_SERVER['REQUEST_METHOD'] ?? 'GET');
