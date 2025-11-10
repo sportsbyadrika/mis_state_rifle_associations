@@ -30,7 +30,7 @@ ob_start();
                         <td class="px-6 py-4 text-sm text-slate-500"><?= htmlspecialchars($organization['phone'] ?? ''); ?></td>
                         <td class="px-6 py-4 text-sm text-slate-500"><?= htmlspecialchars($organization['address'] ?? ''); ?></td>
                         <td class="px-6 py-4 text-sm text-slate-500">
-                            <a href="/organizations/<?= htmlspecialchars($type); ?>/<?= htmlspecialchars($organization['hash_id']); ?>" class="text-slate-900 font-medium">View</a>
+                            <a href="<?= htmlspecialchars(url_to('organizations/' . rawurlencode($type) . '/' . rawurlencode($organization['hash_id']))); ?>" class="text-slate-900 font-medium">View</a>
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -44,7 +44,7 @@ ob_start();
             <h3 class="text-lg font-semibold text-slate-700">Create <?= htmlspecialchars(strtoupper($type)); ?></h3>
             <button onclick="document.getElementById('create-modal').classList.add('hidden')" class="text-slate-500">&times;</button>
         </div>
-        <form action="/organizations/<?= htmlspecialchars($type); ?>" method="POST" class="mt-4 space-y-4">
+        <form action="<?= htmlspecialchars(url_to('organizations/' . rawurlencode($type))); ?>" method="POST" class="mt-4 space-y-4">
             <input type="hidden" name="_token" value="<?= htmlspecialchars($csrf); ?>">
             <div>
                 <label class="block text-sm font-medium text-slate-600">Name</label>

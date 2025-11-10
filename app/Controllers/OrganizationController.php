@@ -20,7 +20,7 @@ class OrganizationController extends Controller
     {
         $user = Auth::user();
         if (!$user) {
-            header('Location: /login');
+            header('Location: ' . \url_to('login'));
             exit;
         }
 
@@ -46,7 +46,7 @@ class OrganizationController extends Controller
 
         $user = Auth::user();
         if (!$user) {
-            header('Location: /login');
+            header('Location: ' . \url_to('login'));
             exit;
         }
 
@@ -58,7 +58,7 @@ class OrganizationController extends Controller
         $parent = $_POST['parent_id'] ?? null;
 
         if (!Validator::required($name)) {
-            header('Location: /organizations/' . $type);
+            header('Location: ' . \url_to('organizations/' . rawurlencode($type)));
             exit;
         }
 
@@ -72,7 +72,7 @@ class OrganizationController extends Controller
             'phone' => $phone,
         ]);
 
-        header('Location: /organizations/' . $type);
+        header('Location: ' . \url_to('organizations/' . rawurlencode($type)));
         exit;
     }
 }

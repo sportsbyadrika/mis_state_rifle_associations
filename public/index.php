@@ -45,6 +45,15 @@ $scriptName = $_SERVER['SCRIPT_NAME'] ?? '';
 $scriptDir = str_replace('\\', '/', dirname($scriptName));
 $scriptDir = $scriptDir === '/' ? '' : rtrim($scriptDir, '/');
 
+$basePath = getenv('APP_BASE_PATH');
+if ($basePath === false || $basePath === null || $basePath === '') {
+    $basePath = $scriptDir;
+}
+
+if (!defined('APP_BASE_PATH')) {
+    define('APP_BASE_PATH', $basePath);
+}
+
 if (str_contains($requestUri, '?')) {
     $requestPath = strstr($requestUri, '?', true);
 } else {

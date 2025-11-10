@@ -15,7 +15,7 @@ class FinanceController extends Controller
     {
         $user = Auth::user();
         if (!$user) {
-            header('Location: /login');
+            header('Location: ' . \url_to('login'));
             exit;
         }
 

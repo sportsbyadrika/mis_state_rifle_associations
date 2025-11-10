@@ -17,8 +17,8 @@
                 </div>
             </div>
             <div class="flex items-center space-x-4 text-sm text-slate-600">
-                <a href="/login" class="hover:text-slate-900">Member Login</a>
-                <a href="/register" class="hover:text-slate-900">Join KSRA</a>
+                <a href="<?= htmlspecialchars(url_to('login')); ?>" class="hover:text-slate-900">Member Login</a>
+                <a href="<?= htmlspecialchars(url_to('register')); ?>" class="hover:text-slate-900">Join KSRA</a>
             </div>
         </div>
     </header>

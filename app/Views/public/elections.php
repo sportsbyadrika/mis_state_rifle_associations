@@ -16,7 +16,7 @@
                     <p class="text-sm text-slate-500">Elections & Public Representatives</p>
                 </div>
             </div>
-            <a href="/" class="text-sm font-medium text-slate-600">Back to Portal</a>
+            <a href="<?= htmlspecialchars(url_to('')); ?>" class="text-sm font-medium text-slate-600">Back to Portal</a>
         </div>
     </header>
     <main class="max-w-5xl mx-auto px-6 py-10 space-y-6">
