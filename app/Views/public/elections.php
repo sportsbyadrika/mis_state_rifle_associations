@@ -5,38 +5,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KSRA Elections & Representatives</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif']
+                    }
+                }
+            }
+        };
+    </script>
+    <link rel="stylesheet" href="<?= htmlspecialchars(asset_url('css/theme.css')); ?>">
 </head>
-<body class="bg-slate-100 min-h-screen">
-    <header class="bg-white shadow">
-        <div class="max-w-5xl mx-auto px-6 py-6 flex items-center justify-between">
-            <div class="flex items-center space-x-3">
-                <div class="h-12 w-12 bg-slate-900 text-white flex items-center justify-center rounded-full text-xl font-bold">KS</div>
+<body class="theme-body min-h-screen flex flex-col">
+    <header class="navbar shadow-soft">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="brand-mark h-12 w-12 text-xl font-semibold">KS</div>
                 <div>
-                    <h1 class="text-2xl font-semibold text-slate-800">Kerala State Rifle Association</h1>
-                    <p class="text-sm text-slate-500">Elections & Public Representatives</p>
+                    <h1 class="text-2xl font-semibold">Kerala State Rifle Association</h1>
+                    <p class="brand-subtitle text-xs uppercase tracking-[0.32em]">Elections &amp; Representatives</p>
                 </div>
             </div>
-            <a href="<?= htmlspecialchars(url_to('')); ?>" class="text-sm font-medium text-slate-600">Back to Portal</a>
+            <a href="<?= htmlspecialchars(url_to('')); ?>" class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/30 text-white/90 hover:bg-white/10">Back to Portal</a>
         </div>
     </header>
-    <main class="max-w-5xl mx-auto px-6 py-10 space-y-6">
-        <?php foreach ($elections as $election): ?>
-            <article class="bg-white rounded-xl shadow overflow-hidden">
-                <div class="md:flex">
-                    <div class="md:w-1/3 bg-slate-200 h-56 md:h-auto">
-                        <img src="<?= htmlspecialchars($election['photo_path'] ?? 'https://via.placeholder.com/400x300'); ?>" alt="Election" class="w-full h-full object-cover">
+    <main class="flex-1">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-8">
+            <?php foreach ($elections as $election): ?>
+                <article class="card overflow-hidden">
+                    <div class="md:flex">
+                        <div class="md:w-1/3 bg-slate-200 h-56 md:h-full">
+                            <img src="<?= htmlspecialchars($election['photo_path'] ?? 'https://via.placeholder.com/400x300'); ?>" alt="Election" class="w-full h-full object-cover">
+                        </div>
+                        <div class="md:w-2/3 p-6 space-y-3">
+                            <h2 class="text-xl font-semibold text-slate-800"><?= htmlspecialchars($election['title']); ?></h2>
+                            <p class="text-xs uppercase tracking-wide text-muted">Organization: <?= htmlspecialchars($election['organization_name']); ?> • Held On: <?= htmlspecialchars($election['held_on']); ?></p>
+                            <p class="text-sm text-muted leading-relaxed"><?= nl2br(htmlspecialchars($election['description'] ?? '')); ?></p>
+                        </div>
                     </div>
-                    <div class="md:w-2/3 p-6">
-                        <h2 class="text-xl font-semibold text-slate-800"><?= htmlspecialchars($election['title']); ?></h2>
-                        <p class="text-sm text-slate-500 mt-1">Organization: <?= htmlspecialchars($election['organization_name']); ?> • Held On: <?= htmlspecialchars($election['held_on']); ?></p>
-                        <p class="text-slate-600 mt-4 leading-relaxed"><?= nl2br(htmlspecialchars($election['description'] ?? '')); ?></p>
-                    </div>
-                </div>
-            </article>
-        <?php endforeach; ?>
+                </article>
+            <?php endforeach; ?>
+        </div>
     </main>
-    <footer class="bg-white border-t border-slate-200">
-        <div class="max-w-5xl mx-auto px-6 py-4 text-sm text-slate-500">© <?= date('Y'); ?> Kerala State Rifle Association. All rights reserved.</div>
+    <footer class="surface border-t border-slate-200">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-sm text-muted">© <?= date('Y'); ?> Kerala State Rifle Association. All rights reserved.</div>
     </footer>
 </body>
 </html>

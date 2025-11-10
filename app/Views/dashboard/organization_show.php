@@ -4,150 +4,150 @@ $heading = ucfirst($type) . ' Profile';
 ob_start();
 ?>
 <?php if (!empty($flash)): ?>
-    <div class="mb-6 px-4 py-3 rounded-lg <?= $flash['type'] === 'error' ? 'bg-red-100 text-red-700' : 'bg-emerald-100 text-emerald-700'; ?>">
+    <div class="alert <?= $flash['type'] === 'error' ? 'alert-error' : 'alert-success'; ?> mb-6">
         <?= htmlspecialchars($flash['message'] ?? ''); ?>
     </div>
 <?php endif; ?>
 <div class="space-y-6">
-    <div class="bg-white rounded-xl shadow p-6">
-        <div class="flex items-start justify-between">
-            <div>
-                <h2 class="text-xl font-semibold text-slate-800"><?= htmlspecialchars($organization['name']); ?></h2>
-                <p class="text-sm text-slate-500 mt-1">Primary contact and status details for this organization.</p>
+    <div class="card p-6 space-y-6">
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+            <div class="space-y-2">
+                <h2 class="text-xl font-semibold section-heading"><?= htmlspecialchars($organization['name']); ?></h2>
+                <p class="text-sm text-muted">Primary contact and status details for this organization.</p>
             </div>
-            <form action="<?= htmlspecialchars(url_to('organizations/' . rawurlencode($type) . '/' . rawurlencode($organization['hash_id']) . '/toggle')); ?>" method="POST">
+            <form action="<?= htmlspecialchars(url_to('organizations/' . rawurlencode($type) . '/' . rawurlencode($organization['hash_id']) . '/toggle')); ?>" method="POST" class="flex-shrink-0">
                 <input type="hidden" name="_token" value="<?= htmlspecialchars($csrf); ?>">
-                <button type="submit" class="px-4 py-2 rounded-md <?= ($organization['status'] ?? 'active') === 'active' ? 'bg-amber-500 text-white hover:bg-amber-600' : 'bg-emerald-600 text-white hover:bg-emerald-700'; ?>">
+                <button type="submit" class="<?= ($organization['status'] ?? 'active') === 'active' ? 'button-danger' : 'button-primary'; ?>">
                     <?= ($organization['status'] ?? 'active') === 'active' ? 'Deactivate Organization' : 'Activate Organization'; ?>
                 </button>
             </form>
         </div>
-        <dl class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-slate-600">
-            <div>
-                <dt class="font-medium text-slate-500">Status</dt>
-                <dd class="mt-1">
+        <dl class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+            <div class="space-y-2">
+                <dt class="text-xs font-semibold text-muted uppercase tracking-wide">Status</dt>
+                <dd>
                     <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold <?= ($organization['status'] ?? 'active') === 'active' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'; ?>">
                         <?= htmlspecialchars(ucfirst($organization['status'] ?? 'active')); ?>
                     </span>
                 </dd>
             </div>
-            <div>
-                <dt class="font-medium text-slate-500">Type</dt>
-                <dd class="mt-1 uppercase text-slate-700"><?= htmlspecialchars($type); ?></dd>
+            <div class="space-y-2">
+                <dt class="text-xs font-semibold text-muted uppercase tracking-wide">Type</dt>
+                <dd class="uppercase font-semibold text-slate-800"><?= htmlspecialchars($type); ?></dd>
             </div>
-            <div>
-                <dt class="font-medium text-slate-500">Email</dt>
-                <dd class="mt-1 text-slate-700"><?= htmlspecialchars($organization['email'] ?? '—'); ?></dd>
+            <div class="space-y-2">
+                <dt class="text-xs font-semibold text-muted uppercase tracking-wide">Email</dt>
+                <dd class="text-slate-800"><?= htmlspecialchars($organization['email'] ?? '—'); ?></dd>
             </div>
-            <div>
-                <dt class="font-medium text-slate-500">Phone</dt>
-                <dd class="mt-1 text-slate-700"><?= htmlspecialchars($organization['phone'] ?? '—'); ?></dd>
+            <div class="space-y-2">
+                <dt class="text-xs font-semibold text-muted uppercase tracking-wide">Phone</dt>
+                <dd class="text-slate-800"><?= htmlspecialchars($organization['phone'] ?? '—'); ?></dd>
             </div>
-            <div class="md:col-span-2">
-                <dt class="font-medium text-slate-500">Address</dt>
-                <dd class="mt-1 text-slate-700 whitespace-pre-line"><?= nl2br(htmlspecialchars($organization['address'] ?? '—')); ?></dd>
+            <div class="md:col-span-2 space-y-2">
+                <dt class="text-xs font-semibold text-muted uppercase tracking-wide">Address</dt>
+                <dd class="text-slate-800 whitespace-pre-line"><?= nl2br(htmlspecialchars($organization['address'] ?? '—')); ?></dd>
             </div>
             <?php if (!empty($parent)): ?>
-                <div class="md:col-span-2">
-                    <dt class="font-medium text-slate-500">Parent Organization</dt>
-                    <dd class="mt-1 text-slate-700"><?= htmlspecialchars($parent['name'] ?? ''); ?></dd>
+                <div class="md:col-span-2 space-y-2">
+                    <dt class="text-xs font-semibold text-muted uppercase tracking-wide">Parent Organization</dt>
+                    <dd class="text-slate-800"><?= htmlspecialchars($parent['name'] ?? ''); ?></dd>
                 </div>
             <?php endif; ?>
         </dl>
     </div>
 
-    <div class="bg-white rounded-xl shadow p-6">
-        <h3 class="text-lg font-semibold text-slate-700">Edit Organization Details</h3>
-        <form action="<?= htmlspecialchars(url_to('organizations/' . rawurlencode($type) . '/' . rawurlencode($organization['hash_id']) . '/update')); ?>" method="POST" class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="card p-6">
+        <h3 class="text-lg font-semibold section-heading">Edit Organization Details</h3>
+        <form action="<?= htmlspecialchars(url_to('organizations/' . rawurlencode($type) . '/' . rawurlencode($organization['hash_id']) . '/update')); ?>" method="POST" class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
             <input type="hidden" name="_token" value="<?= htmlspecialchars($csrf); ?>">
-            <div>
-                <label class="block text-sm font-medium text-slate-600">Name</label>
-                <input type="text" name="name" value="<?= htmlspecialchars($organization['name']); ?>" required class="mt-1 w-full rounded border-slate-300 focus:border-slate-500 focus:ring-slate-500">
+            <div class="space-y-2">
+                <label class="form-label text-sm">Name</label>
+                <input type="text" name="name" value="<?= htmlspecialchars($organization['name']); ?>" required class="input-control">
             </div>
-            <div>
-                <label class="block text-sm font-medium text-slate-600">Email</label>
-                <input type="email" name="email" value="<?= htmlspecialchars($organization['email'] ?? ''); ?>" class="mt-1 w-full rounded border-slate-300 focus:border-slate-500 focus:ring-slate-500">
+            <div class="space-y-2">
+                <label class="form-label text-sm">Email</label>
+                <input type="email" name="email" value="<?= htmlspecialchars($organization['email'] ?? ''); ?>" class="input-control">
             </div>
-            <div>
-                <label class="block text-sm font-medium text-slate-600">Phone</label>
-                <input type="text" name="phone" value="<?= htmlspecialchars($organization['phone'] ?? ''); ?>" class="mt-1 w-full rounded border-slate-300 focus:border-slate-500 focus:ring-slate-500">
+            <div class="space-y-2">
+                <label class="form-label text-sm">Phone</label>
+                <input type="text" name="phone" value="<?= htmlspecialchars($organization['phone'] ?? ''); ?>" class="input-control">
             </div>
-            <div class="md:col-span-2">
-                <label class="block text-sm font-medium text-slate-600">Address</label>
-                <textarea name="address" rows="3" class="mt-1 w-full rounded border-slate-300 focus:border-slate-500 focus:ring-slate-500"><?= htmlspecialchars($organization['address'] ?? ''); ?></textarea>
+            <div class="md:col-span-2 space-y-2">
+                <label class="form-label text-sm">Address</label>
+                <textarea name="address" rows="3" class="input-control"><?= htmlspecialchars($organization['address'] ?? ''); ?></textarea>
             </div>
-            <div class="md:col-span-2 flex justify-end space-x-3">
-                <a href="<?= htmlspecialchars(url_to('organizations/' . rawurlencode($type))); ?>" class="px-4 py-2 rounded-md border border-slate-300 text-slate-600">Back to List</a>
-                <button type="submit" class="px-4 py-2 bg-slate-900 text-white rounded-md">Update Organization</button>
+            <div class="md:col-span-2 flex flex-wrap justify-end gap-3">
+                <a href="<?= htmlspecialchars(url_to('organizations/' . rawurlencode($type))); ?>" class="button-secondary">Back to List</a>
+                <button type="submit" class="button-primary">Update Organization</button>
             </div>
         </form>
     </div>
 
-    <div class="bg-white rounded-xl shadow p-6">
-        <h3 class="text-lg font-semibold text-slate-700">Add <?= htmlspecialchars($adminRoleLabel); ?></h3>
-        <form action="<?= htmlspecialchars(url_to('organizations/' . rawurlencode($type) . '/' . rawurlencode($organization['hash_id']) . '/admins')); ?>" method="POST" class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="card p-6">
+        <h3 class="text-lg font-semibold section-heading">Add <?= htmlspecialchars($adminRoleLabel); ?></h3>
+        <form action="<?= htmlspecialchars(url_to('organizations/' . rawurlencode($type) . '/' . rawurlencode($organization['hash_id']) . '/admins')); ?>" method="POST" class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
             <input type="hidden" name="_token" value="<?= htmlspecialchars($csrf); ?>">
-            <div>
-                <label class="block text-sm font-medium text-slate-600">Name</label>
-                <input type="text" name="name" required class="mt-1 w-full rounded border-slate-300 focus:border-slate-500 focus:ring-slate-500">
+            <div class="space-y-2">
+                <label class="form-label text-sm">Name</label>
+                <input type="text" name="name" required class="input-control">
             </div>
-            <div>
-                <label class="block text-sm font-medium text-slate-600">Email</label>
-                <input type="email" name="email" required class="mt-1 w-full rounded border-slate-300 focus:border-slate-500 focus:ring-slate-500">
+            <div class="space-y-2">
+                <label class="form-label text-sm">Email</label>
+                <input type="email" name="email" required class="input-control">
             </div>
-            <div>
-                <label class="block text-sm font-medium text-slate-600">Phone</label>
-                <input type="text" name="phone" class="mt-1 w-full rounded border-slate-300 focus:border-slate-500 focus:ring-slate-500">
+            <div class="space-y-2">
+                <label class="form-label text-sm">Phone</label>
+                <input type="text" name="phone" class="input-control">
             </div>
-            <div>
-                <label class="block text-sm font-medium text-slate-600">Password</label>
-                <input type="password" name="password" required minlength="8" class="mt-1 w-full rounded border-slate-300 focus:border-slate-500 focus:ring-slate-500">
+            <div class="space-y-2">
+                <label class="form-label text-sm">Password</label>
+                <input type="password" name="password" required minlength="8" class="input-control">
             </div>
             <div class="md:col-span-2 flex justify-end">
-                <button type="submit" class="px-4 py-2 bg-emerald-600 text-white rounded-md">Add <?= htmlspecialchars($adminRoleLabel); ?></button>
+                <button type="submit" class="button-primary">Add <?= htmlspecialchars($adminRoleLabel); ?></button>
             </div>
         </form>
     </div>
 
-    <div class="bg-white rounded-xl shadow p-6">
-        <div class="flex items-center justify-between">
-            <h3 class="text-lg font-semibold text-slate-700">Current <?= htmlspecialchars($adminRoleLabel); ?>s</h3>
-            <span class="text-sm text-slate-500"><?= count($admins); ?> total</span>
+    <div class="card p-6">
+        <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <h3 class="text-lg font-semibold section-heading">Current <?= htmlspecialchars($adminRoleLabel); ?>s</h3>
+            <span class="text-sm text-muted"><?= count($admins); ?> total</span>
         </div>
         <?php if (empty($admins)): ?>
-            <p class="mt-4 text-sm text-slate-500">No administrators assigned yet.</p>
+            <p class="mt-4 text-sm text-muted">No administrators assigned yet.</p>
         <?php else: ?>
             <div class="mt-6 space-y-4">
                 <?php foreach ($admins as $admin): ?>
-                    <div class="border border-slate-200 rounded-lg p-4">
+                    <div class="card p-4 space-y-4">
                         <form action="<?= htmlspecialchars(url_to('organizations/' . rawurlencode($type) . '/' . rawurlencode($organization['hash_id']) . '/admins/' . rawurlencode($admin['hash_id']) . '/update')); ?>" method="POST" class="grid grid-cols-1 md:grid-cols-4 gap-4">
                             <input type="hidden" name="_token" value="<?= htmlspecialchars($csrf); ?>">
-                            <div>
-                                <label class="block text-xs font-medium text-slate-500 uppercase">Name</label>
-                                <input type="text" name="name" value="<?= htmlspecialchars($admin['name'] ?? ''); ?>" required class="mt-1 w-full rounded border-slate-300 focus:border-slate-500 focus:ring-slate-500">
+                            <div class="space-y-2">
+                                <label class="form-label text-xs uppercase tracking-wide">Name</label>
+                                <input type="text" name="name" value="<?= htmlspecialchars($admin['name'] ?? ''); ?>" required class="input-control">
                             </div>
-                            <div>
-                                <label class="block text-xs font-medium text-slate-500 uppercase">Email</label>
-                                <input type="email" name="email" value="<?= htmlspecialchars($admin['email'] ?? ''); ?>" required class="mt-1 w-full rounded border-slate-300 focus:border-slate-500 focus:ring-slate-500">
+                            <div class="space-y-2">
+                                <label class="form-label text-xs uppercase tracking-wide">Email</label>
+                                <input type="email" name="email" value="<?= htmlspecialchars($admin['email'] ?? ''); ?>" required class="input-control">
                             </div>
-                            <div>
-                                <label class="block text-xs font-medium text-slate-500 uppercase">Phone</label>
-                                <input type="text" name="phone" value="<?= htmlspecialchars($admin['phone'] ?? ''); ?>" class="mt-1 w-full rounded border-slate-300 focus:border-slate-500 focus:ring-slate-500">
+                            <div class="space-y-2">
+                                <label class="form-label text-xs uppercase tracking-wide">Phone</label>
+                                <input type="text" name="phone" value="<?= htmlspecialchars($admin['phone'] ?? ''); ?>" class="input-control">
                             </div>
-                            <div class="flex items-center mt-6 md:mt-8">
-                                <button type="submit" class="px-3 py-2 bg-slate-900 text-white rounded-md text-sm">Update</button>
+                            <div class="flex items-center md:justify-end">
+                                <button type="submit" class="button-secondary">Update</button>
                             </div>
                         </form>
-                        <div class="mt-3 flex items-center justify-between text-sm">
-                            <div class="text-xs text-slate-500 uppercase">
-                                Status:
-                                <span class="ml-1 inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold <?= ($admin['status'] ?? 'active') === 'active' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'; ?>">
+                        <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between text-sm">
+                            <div class="text-xs text-muted uppercase tracking-wide flex items-center gap-2">
+                                <span>Status:</span>
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold <?= ($admin['status'] ?? 'active') === 'active' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'; ?>">
                                     <?= htmlspecialchars(ucfirst($admin['status'] ?? 'active')); ?>
                                 </span>
                             </div>
-                            <form action="<?= htmlspecialchars(url_to('organizations/' . rawurlencode($type) . '/' . rawurlencode($organization['hash_id']) . '/admins/' . rawurlencode($admin['hash_id']) . '/toggle')); ?>" method="POST">
+                            <form action="<?= htmlspecialchars(url_to('organizations/' . rawurlencode($type) . '/' . rawurlencode($organization['hash_id']) . '/admins/' . rawurlencode($admin['hash_id']) . '/toggle')); ?>" method="POST" class="flex justify-end">
                                 <input type="hidden" name="_token" value="<?= htmlspecialchars($csrf); ?>">
-                                <button type="submit" class="px-3 py-2 rounded-md text-sm <?= ($admin['status'] ?? 'active') === 'active' ? 'bg-amber-500 text-white hover:bg-amber-600' : 'bg-emerald-600 text-white hover:bg-emerald-700'; ?>">
+                                <button type="submit" class="<?= ($admin['status'] ?? 'active') === 'active' ? 'button-danger' : 'button-primary'; ?>">
                                     <?= ($admin['status'] ?? 'active') === 'active' ? 'Deactivate' : 'Activate'; ?>
                                 </button>
                             </form>

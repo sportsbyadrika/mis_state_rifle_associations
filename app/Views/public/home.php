@@ -5,70 +5,84 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kerala State Rifle Association - Public Information</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif']
+                    }
+                }
+            }
+        };
+    </script>
+    <link rel="stylesheet" href="<?= htmlspecialchars(asset_url('css/theme.css')); ?>">
 </head>
-<body class="bg-slate-100 min-h-screen">
-    <header class="bg-white shadow">
-        <div class="max-w-6xl mx-auto px-6 py-6 flex flex-wrap items-center justify-between">
-            <div class="flex items-center space-x-3">
-                <div class="h-12 w-12 bg-slate-900 text-white flex items-center justify-center rounded-full text-xl font-bold">KS</div>
+<body class="theme-body min-h-screen flex flex-col">
+    <header class="navbar shadow-soft">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="brand-mark h-12 w-12 text-xl font-semibold">KS</div>
                 <div>
-                    <h1 class="text-2xl font-semibold text-slate-800">Kerala State Rifle Association</h1>
-                    <p class="text-sm text-slate-500">Official public portal</p>
+                    <h1 class="text-2xl font-semibold">Kerala State Rifle Association</h1>
+                    <p class="brand-subtitle text-xs uppercase tracking-[0.32em]">Official public portal</p>
                 </div>
             </div>
-            <div class="flex items-center space-x-4 text-sm text-slate-600">
-                <a href="<?= htmlspecialchars(url_to('login')); ?>" class="hover:text-slate-900">Member Login</a>
-                <a href="<?= htmlspecialchars(url_to('register')); ?>" class="hover:text-slate-900">Join KSRA</a>
+            <div class="flex items-center gap-3 text-sm">
+                <a href="<?= htmlspecialchars(url_to('login')); ?>" class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/30 text-white/90 hover:bg-white/10">Member Login</a>
+                <a href="<?= htmlspecialchars(url_to('register')); ?>" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 text-white font-semibold hover:bg-white/20">Join KSRA</a>
             </div>
         </div>
     </header>
-    <main class="max-w-6xl mx-auto px-6 py-10 space-y-10">
-        <section>
-            <h2 class="text-xl font-semibold text-slate-800 mb-4">Latest Elections & Representatives</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <?php foreach ($elections as $election): ?>
-                    <article class="bg-white rounded-xl shadow overflow-hidden">
-                        <div class="h-48 bg-slate-200">
-                            <img src="<?= htmlspecialchars($election['photo_path'] ?? 'https://via.placeholder.com/600x400'); ?>" alt="Election" class="w-full h-full object-cover">
-                        </div>
-                        <div class="p-6">
-                            <h3 class="text-lg font-semibold text-slate-800"><?= htmlspecialchars($election['title']); ?></h3>
-                            <p class="text-sm text-slate-500">Organization: <?= htmlspecialchars($election['organization_name']); ?> • Held On: <?= htmlspecialchars($election['held_on']); ?></p>
-                            <p class="mt-3 text-slate-600 leading-relaxed line-clamp-3"><?= nl2br(htmlspecialchars($election['description'] ?? '')); ?></p>
-                        </div>
-                    </article>
-                <?php endforeach; ?>
-            </div>
-        </section>
-        <section>
-            <h2 class="text-xl font-semibold text-slate-800 mb-4">Public News</h2>
-            <div class="bg-white rounded-xl shadow divide-y divide-slate-200">
-                <?php foreach ($newsItems as $item): ?>
-                    <article class="px-6 py-4">
-                        <h3 class="text-lg font-semibold text-slate-800"><?= htmlspecialchars($item['title']); ?></h3>
-                        <p class="text-xs text-slate-500 uppercase tracking-wide">Published <?= htmlspecialchars(date('d M Y', strtotime($item['published_at']))); ?></p>
-                        <p class="mt-2 text-slate-600 leading-relaxed"><?= nl2br(htmlspecialchars($item['body'])); ?></p>
-                    </article>
-                <?php endforeach; ?>
-            </div>
-        </section>
-        <section>
-            <h2 class="text-xl font-semibold text-slate-800 mb-4">Bylaws & Governance</h2>
-            <div class="bg-white rounded-xl shadow divide-y divide-slate-200">
-                <?php foreach ($bylaws as $bylaw): ?>
-                    <article class="px-6 py-4 flex items-center justify-between">
-                        <div>
-                            <h3 class="text-lg font-semibold text-slate-800"><?= htmlspecialchars($bylaw['title']); ?></h3>
-                            <p class="text-xs text-slate-500">Published <?= htmlspecialchars($bylaw['published_at'] ? date('d M Y', strtotime($bylaw['published_at'])) : 'Draft'); ?></p>
-                        </div>
-                        <a href="<?= htmlspecialchars($bylaw['document_path']); ?>" class="text-sm font-medium text-slate-900" target="_blank" rel="noopener">View Document &rarr;</a>
-                    </article>
-                <?php endforeach; ?>
-            </div>
-        </section>
+    <main class="flex-1">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-12">
+            <section>
+                <h2 class="text-xl font-semibold section-heading mb-4">Latest Elections &amp; Representatives</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <?php foreach ($elections as $election): ?>
+                        <article class="card overflow-hidden">
+                            <div class="h-48 bg-slate-200">
+                                <img src="<?= htmlspecialchars($election['photo_path'] ?? 'https://via.placeholder.com/600x400'); ?>" alt="Election" class="w-full h-full object-cover">
+                            </div>
+                            <div class="p-6 space-y-3">
+                                <h3 class="text-lg font-semibold text-slate-800"><?= htmlspecialchars($election['title']); ?></h3>
+                                <p class="text-xs uppercase tracking-wide text-muted">Organization: <?= htmlspecialchars($election['organization_name']); ?> • Held On: <?= htmlspecialchars($election['held_on']); ?></p>
+                                <p class="text-sm text-muted leading-relaxed line-clamp-4"><?= nl2br(htmlspecialchars($election['description'] ?? '')); ?></p>
+                            </div>
+                        </article>
+                    <?php endforeach; ?>
+                </div>
+            </section>
+            <section>
+                <h2 class="text-xl font-semibold section-heading mb-4">Public News</h2>
+                <div class="card divide-y divide-slate-200">
+                    <?php foreach ($newsItems as $item): ?>
+                        <article class="px-6 py-5 space-y-2">
+                            <h3 class="text-lg font-semibold text-slate-800"><?= htmlspecialchars($item['title']); ?></h3>
+                            <p class="text-xs uppercase tracking-wide text-muted">Published <?= htmlspecialchars(date('d M Y', strtotime($item['published_at']))); ?></p>
+                            <p class="text-sm text-muted leading-relaxed"><?= nl2br(htmlspecialchars($item['body'])); ?></p>
+                        </article>
+                    <?php endforeach; ?>
+                </div>
+            </section>
+            <section>
+                <h2 class="text-xl font-semibold section-heading mb-4">Bylaws &amp; Governance</h2>
+                <div class="card divide-y divide-slate-200">
+                    <?php foreach ($bylaws as $bylaw): ?>
+                        <article class="px-6 py-5 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+                            <div>
+                                <h3 class="text-lg font-semibold text-slate-800"><?= htmlspecialchars($bylaw['title']); ?></h3>
+                                <p class="text-xs text-muted">Published <?= htmlspecialchars($bylaw['published_at'] ? date('d M Y', strtotime($bylaw['published_at'])) : 'Draft'); ?></p>
+                            </div>
+                            <a href="<?= htmlspecialchars($bylaw['document_path']); ?>" class="auth-link text-sm font-semibold" target="_blank" rel="noopener">View Document &rarr;</a>
+                        </article>
+                    <?php endforeach; ?>
+                </div>
+            </section>
+        </div>
     </main>
-    <footer class="bg-white border-t border-slate-200">
-        <div class="max-w-6xl mx-auto px-6 py-4 text-sm text-slate-500">© <?= date('Y'); ?> Kerala State Rifle Association. All rights reserved.</div>
+    <footer class="surface border-t border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-sm text-muted">© <?= date('Y'); ?> Kerala State Rifle Association. All rights reserved.</div>
     </footer>
 </body>
 </html>

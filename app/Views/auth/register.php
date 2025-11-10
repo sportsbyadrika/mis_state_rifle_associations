@@ -5,40 +5,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KSRA MIS - Register</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif']
+                    }
+                }
+            }
+        };
+    </script>
+    <link rel="stylesheet" href="<?= htmlspecialchars(asset_url('css/theme.css')); ?>">
 </head>
-<body class="bg-slate-100 min-h-screen flex items-center justify-center">
-    <div class="bg-white shadow-xl rounded-lg p-8 w-full max-w-md">
-        <div class="text-center mb-6">
-            <div class="mx-auto h-16 w-16 bg-slate-900 text-white flex items-center justify-center rounded-full text-2xl font-bold">KS</div>
-            <h1 class="text-2xl font-semibold text-slate-800 mt-4">Create Your Account</h1>
-            <p class="text-slate-500 text-sm">Members can manage all KSRA memberships in one place.</p>
+<body class="theme-body min-h-screen flex items-center justify-center px-4 py-12">
+    <div class="auth-card w-full max-w-md">
+        <div class="text-center space-y-3 mb-6">
+            <div class="brand-mark mx-auto h-16 w-16 text-2xl font-semibold">KS</div>
+            <h1 class="text-2xl font-semibold section-heading">Create Your Account</h1>
+            <p class="text-sm text-muted">Register to manage memberships across KSRA organizations with a single login.</p>
         </div>
         <?php if (!empty($error)): ?>
-            <div class="mb-4 p-3 rounded bg-red-100 text-red-600 text-sm">
+            <div class="alert alert-error mb-4 text-sm">
                 <?= htmlspecialchars($error); ?>
             </div>
         <?php endif; ?>
         <form action="<?= htmlspecialchars(url_to('register')); ?>" method="POST" class="space-y-4">
             <input type="hidden" name="_token" value="<?= htmlspecialchars($csrf); ?>">
-            <div>
-                <label class="block text-sm font-medium text-slate-600">Full Name</label>
-                <input type="text" name="name" class="mt-1 w-full rounded border-slate-300 focus:border-slate-500 focus:ring-slate-500" required>
+            <div class="space-y-2">
+                <label class="form-label text-sm" for="name">Full Name</label>
+                <input type="text" id="name" name="name" class="input-control" required>
             </div>
-            <div>
-                <label class="block text-sm font-medium text-slate-600">Email</label>
-                <input type="email" name="email" class="mt-1 w-full rounded border-slate-300 focus:border-slate-500 focus:ring-slate-500" required>
+            <div class="space-y-2">
+                <label class="form-label text-sm" for="email">Email</label>
+                <input type="email" id="email" name="email" class="input-control" required>
             </div>
-            <div>
-                <label class="block text-sm font-medium text-slate-600">Phone</label>
-                <input type="tel" name="phone" class="mt-1 w-full rounded border-slate-300 focus:border-slate-500 focus:ring-slate-500" required>
+            <div class="space-y-2">
+                <label class="form-label text-sm" for="phone">Phone</label>
+                <input type="tel" id="phone" name="phone" class="input-control" required>
             </div>
-            <div>
-                <label class="block text-sm font-medium text-slate-600">Password</label>
-                <input type="password" name="password" class="mt-1 w-full rounded border-slate-300 focus:border-slate-500 focus:ring-slate-500" required>
+            <div class="space-y-2">
+                <label class="form-label text-sm" for="password">Password</label>
+                <input type="password" id="password" name="password" class="input-control" required>
             </div>
-            <button type="submit" class="w-full py-2 bg-slate-900 text-white rounded-md hover:bg-slate-800">Register</button>
+            <button type="submit" class="button-primary w-full flex items-center justify-center">Register</button>
         </form>
-        <p class="text-center text-sm text-slate-500 mt-4">Already registered? <a class="text-slate-900 font-medium" href="<?= htmlspecialchars(url_to('login')); ?>">Login</a></p>
+        <p class="text-center text-sm text-muted mt-6">Already registered? <a class="auth-link" href="<?= htmlspecialchars(url_to('login')); ?>">Login</a></p>
     </div>
 </body>
 </html>
