@@ -29,7 +29,7 @@ class ElectionController extends Controller
 
         $user = Auth::user();
         if (!$user) {
-            header('Location: /login');
+            header('Location: ' . \url_to('login'));
             exit;
         }
 
@@ -43,7 +43,7 @@ class ElectionController extends Controller
 
         $electionModel = new Election();
         $electionModel->create($data);
-        header('Location: /dashboard');
+        header('Location: ' . \url_to('dashboard'));
         exit;
     }
 }

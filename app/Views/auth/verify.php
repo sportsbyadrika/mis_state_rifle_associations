@@ -22,7 +22,7 @@
                 <?= htmlspecialchars($message); ?>
             </div>
         <?php endif; ?>
-        <form action="/verify" method="POST" class="space-y-4">
+        <form action="<?= htmlspecialchars(url_to('verify')); ?>" method="POST" class="space-y-4">
             <input type="hidden" name="_token" value="<?= htmlspecialchars($csrf); ?>">
             <input type="hidden" name="email" value="<?= htmlspecialchars($email); ?>">
             <div>
@@ -31,7 +31,7 @@
             </div>
             <button type="submit" class="w-full py-2 bg-slate-900 text-white rounded-md hover:bg-slate-800">Verify & Continue</button>
         </form>
-        <p class="text-center text-sm text-slate-500 mt-4">Wrong email? <a class="text-slate-900 font-medium" href="/register">Start over</a></p>
+        <p class="text-center text-sm text-slate-500 mt-4">Wrong email? <a class="text-slate-900 font-medium" href="<?= htmlspecialchars(url_to('register')); ?>">Start over</a></p>
     </div>
 </body>
 </html>

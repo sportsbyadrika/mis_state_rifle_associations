@@ -18,7 +18,7 @@
                 <?= htmlspecialchars($error); ?>
             </div>
         <?php endif; ?>
-        <form action="/register" method="POST" class="space-y-4">
+        <form action="<?= htmlspecialchars(url_to('register')); ?>" method="POST" class="space-y-4">
             <input type="hidden" name="_token" value="<?= htmlspecialchars($csrf); ?>">
             <div>
                 <label class="block text-sm font-medium text-slate-600">Full Name</label>
@@ -38,7 +38,7 @@
             </div>
             <button type="submit" class="w-full py-2 bg-slate-900 text-white rounded-md hover:bg-slate-800">Register</button>
         </form>
-        <p class="text-center text-sm text-slate-500 mt-4">Already registered? <a class="text-slate-900 font-medium" href="/login">Login</a></p>
+        <p class="text-center text-sm text-slate-500 mt-4">Already registered? <a class="text-slate-900 font-medium" href="<?= htmlspecialchars(url_to('login')); ?>">Login</a></p>
     </div>
 </body>
 </html>

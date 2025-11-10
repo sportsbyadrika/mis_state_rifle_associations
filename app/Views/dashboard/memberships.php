@@ -9,7 +9,7 @@ ob_start();
             <h2 class="text-lg font-semibold text-slate-700">Membership Overview</h2>
             <p class="text-sm text-slate-500">Track and manage membership applications across organizations.</p>
         </div>
-        <a href="/memberships/apply" class="px-4 py-2 bg-slate-900 text-white rounded-md">Apply for Membership</a>
+        <a href="<?= htmlspecialchars(url_to('memberships/apply')); ?>" class="px-4 py-2 bg-slate-900 text-white rounded-md">Apply for Membership</a>
     </div>
     <div class="overflow-x-auto">
         <table class="min-w-full divide-y divide-slate-200">
