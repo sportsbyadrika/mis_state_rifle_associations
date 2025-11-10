@@ -35,7 +35,7 @@
                 </div>
                 <nav id="desktop-nav" class="hidden md:flex items-center gap-6" aria-label="Primary navigation">
                     <a href="<?= htmlspecialchars(url_to('dashboard')); ?>" class="nav-link">Dashboard</a>
-                    <div class="nav-dropdown" data-dropdown>
+                    <div class="nav-dropdown relative" data-dropdown>
                         <button type="button" class="nav-link" data-dropdown-trigger aria-haspopup="true" aria-expanded="false">
                             Organizations
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" class="h-4 w-4">

@@ -48,6 +48,10 @@ a:focus {
     color: rgba(255, 255, 255, 0.74);
 }
 
+.navbar .nav-dropdown {
+    position: relative;
+}
+
 .navbar .nav-link {
     color: var(--color-off-white);
     font-weight: 500;
