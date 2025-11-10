@@ -14,7 +14,7 @@ class MemberController extends Controller
     {
         $user = Auth::user();
         if (!$user) {
-            header('Location: /login');
+            header('Location: ' . \url_to('login'));
             exit;
         }
 
@@ -31,7 +31,7 @@ class MemberController extends Controller
     {
         $user = Auth::user();
         if (!$user) {
-            header('Location: /login');
+            header('Location: ' . \url_to('login'));
             exit;
         }
 
@@ -51,7 +51,7 @@ class MemberController extends Controller
 
         $user = Auth::user();
         if (!$user) {
-            header('Location: /login');
+            header('Location: ' . \url_to('login'));
             exit;
         }
 
@@ -66,13 +66,13 @@ class MemberController extends Controller
         ];
 
         if ($data['organization_id'] <= 0 || $data['membership_type_id'] <= 0) {
-            header('Location: /memberships');
+            header('Location: ' . \url_to('memberships'));
             exit;
         }
 
         $membershipModel = new Membership();
         $membershipModel->create($data);
-        header('Location: /memberships');
+        header('Location: ' . \url_to('memberships'));
         exit;
     }
 }

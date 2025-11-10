@@ -35,7 +35,7 @@ class AuthController extends Controller
         if ($user && password_verify($password, $user['password'])) {
             unset($user['password']);
             Auth::login($user);
-            header('Location: /dashboard');
+            header('Location: ' . \url_to('dashboard'));
             exit;
         }
 
@@ -48,7 +48,7 @@ class AuthController extends Controller
     public function logout(): void
     {
         Auth::logout();
-        header('Location: /login');
+        header('Location: ' . \url_to('login'));
         exit;
     }
 
@@ -147,7 +147,7 @@ class AuthController extends Controller
         }
 
         Auth::login($user);
-        header('Location: /dashboard');
+        header('Location: ' . \url_to('dashboard'));
         exit;
     }
 
