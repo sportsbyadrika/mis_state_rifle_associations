@@ -8,6 +8,7 @@ use App\Core\Csrf;
 use App\Core\Validator;
 use App\Models\User;
 use App\Models\Otp;
+use App\Core\Mailer;
 
 class AuthController extends Controller
 {
@@ -73,6 +74,7 @@ class AuthController extends Controller
             'phone' => Validator::sanitize($_POST['phone'] ?? ''),
             'password' => password_hash($_POST['password'] ?? '', PASSWORD_DEFAULT),
             'role' => User::ROLE_MEMBER,
+            'organization_id' => null,
         ];
 
         if (!Validator::required($data['name']) || !Validator::email($data['email'])) {
@@ -99,10 +101,26 @@ class AuthController extends Controller
         $otpModel->create($data['email'], (string) $otpCode);
         $this->logOtp($data['email'], $otpCode);
 
+        $mailer = new Mailer();
+        $subject = 'KSRA MIS Registration OTP';
+        $body = sprintf(
+            "Dear %s,%s%s%s%sRegards,%sKSRA MIS Team",
+            $data['name'] ?: 'Member',
+            PHP_EOL,
+            'Use the following One-Time Password to complete your registration: ' . $otpCode,
+            PHP_EOL . PHP_EOL,
+            'This OTP will expire in 10 minutes.',
+            PHP_EOL . PHP_EOL
+        );
+        $mailSent = $mailer->send($data['email'], $subject, $body);
+        $message = $mailSent
+            ? 'An OTP has been sent to your email address. Please enter it below to complete registration.'
+            : 'An OTP has been generated. Email delivery is unavailable, please use the OTP from the logs to complete registration.';
+
         $this->view('auth/verify', [
             'csrf' => Csrf::token(),
             'email' => $data['email'],
-            'message' => 'An OTP has been sent to your email address. Please enter it below to complete registration.',
+            'message' => $message,
         ]);
     }
 

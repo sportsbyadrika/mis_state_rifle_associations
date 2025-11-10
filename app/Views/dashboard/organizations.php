@@ -3,6 +3,11 @@ $title = 'Organizations - KSRA MIS';
 $heading = ucfirst($type) . ' Management';
 ob_start();
 ?>
+<?php if (!empty($flash)): ?>
+    <div class="mb-6 px-4 py-3 rounded-lg <?= $flash['type'] === 'error' ? 'bg-red-100 text-red-700' : 'bg-emerald-100 text-emerald-700'; ?>">
+        <?= htmlspecialchars($flash['message'] ?? ''); ?>
+    </div>
+<?php endif; ?>
 <div class="bg-white rounded-xl shadow">
     <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200">
         <div>
@@ -19,6 +24,7 @@ ob_start();
                     <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Email</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Phone</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Address</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Status</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Actions</th>
                 </tr>
             </thead>
@@ -29,8 +35,13 @@ ob_start();
                         <td class="px-6 py-4 text-sm text-slate-500"><?= htmlspecialchars($organization['email'] ?? ''); ?></td>
                         <td class="px-6 py-4 text-sm text-slate-500"><?= htmlspecialchars($organization['phone'] ?? ''); ?></td>
                         <td class="px-6 py-4 text-sm text-slate-500"><?= htmlspecialchars($organization['address'] ?? ''); ?></td>
+                        <td class="px-6 py-4 text-sm">
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium <?= ($organization['status'] ?? 'active') === 'active' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'; ?>">
+                                <?= htmlspecialchars(ucfirst($organization['status'] ?? 'active')); ?>
+                            </span>
+                        </td>
                         <td class="px-6 py-4 text-sm text-slate-500">
-                            <a href="<?= htmlspecialchars(url_to('organizations/' . rawurlencode($type) . '/' . rawurlencode($organization['hash_id']))); ?>" class="text-slate-900 font-medium">View</a>
+                            <a href="<?= htmlspecialchars(url_to('organizations/' . rawurlencode($type) . '/' . rawurlencode($organization['hash_id']))); ?>" class="inline-flex items-center px-3 py-1.5 border border-slate-200 rounded-md text-sm font-medium text-slate-700 hover:bg-slate-100">View</a>
                         </td>
                     </tr>
                 <?php endforeach; ?>

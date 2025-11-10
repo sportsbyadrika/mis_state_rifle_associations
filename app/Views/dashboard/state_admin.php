@@ -3,7 +3,7 @@ $title = 'State Admin Dashboard - KSRA MIS';
 $heading = 'KSRA State Administration';
 ob_start();
 ?>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
     <div class="bg-white rounded-xl shadow p-6">
         <h2 class="text-lg font-semibold text-slate-700">District Rifle Associations</h2>
         <p class="text-sm text-slate-500 mt-2">Create district admins, configure annual fee heads, and review membership performance.</p>
@@ -13,6 +13,11 @@ ob_start();
         <h2 class="text-lg font-semibold text-slate-700">Affiliated Institutions</h2>
         <p class="text-sm text-slate-500 mt-2">Onboard new affiliated institutions and set membership fee structures.</p>
         <a href="<?= htmlspecialchars(url_to('organizations/ai')); ?>" class="inline-block mt-4 text-sm font-medium text-slate-900">Manage AIs &rarr;</a>
+    </div>
+    <div class="bg-white rounded-xl shadow p-6">
+        <h2 class="text-lg font-semibold text-slate-700">Clubs</h2>
+        <p class="text-sm text-slate-500 mt-2">Create club profiles, assign club admins, and monitor member onboarding.</p>
+        <a href="<?= htmlspecialchars(url_to('organizations/club')); ?>" class="inline-block mt-4 text-sm font-medium text-slate-900">Manage Clubs &rarr;</a>
     </div>
 </div>
 <?php

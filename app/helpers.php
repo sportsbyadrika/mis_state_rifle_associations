@@ -41,3 +41,38 @@ if (!function_exists('asset_url')) {
         return url_to($path);
     }
 }
+
+if (!function_exists('config')) {
+    function config(string $key, $default = null)
+    {
+        static $configCache = [];
+
+        if ($key === '') {
+            return $default;
+        }
+
+        $segments = explode('.', $key);
+        $file = array_shift($segments);
+
+        if (!isset($configCache[$file])) {
+            $path = __DIR__ . '/../config/' . $file . '.php';
+            $configCache[$file] = file_exists($path) ? require $path : [];
+        }
+
+        $value = $configCache[$file];
+
+        if (empty($segments)) {
+            return $value === [] ? $default : $value;
+        }
+
+        foreach ($segments as $segment) {
+            if (is_array($value) && array_key_exists($segment, $value)) {
+                $value = $value[$segment];
+            } else {
+                return $default;
+            }
+        }
+
+        return $value;
+    }
+}
