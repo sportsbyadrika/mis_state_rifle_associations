@@ -5,76 +5,224 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($title ?? 'KSRA MIS'); ?></title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif']
+                    }
+                }
+            }
+        };
+    </script>
+    <link rel="stylesheet" href="<?= htmlspecialchars(asset_url('css/theme.css')); ?>">
 </head>
-<body class="bg-slate-100 min-h-screen">
-<div class="flex">
-    <aside class="w-72 bg-slate-900 text-white min-h-screen flex flex-col">
-        <div class="px-6 py-6 border-b border-slate-700 flex items-center space-x-3">
-            <div class="h-12 w-12 bg-slate-700 rounded-full flex items-center justify-center">
-                <span class="text-xl font-semibold">KS</span>
-            </div>
-            <div>
-                <p class="text-lg font-bold">KSRA MIS</p>
-                <p class="text-xs text-slate-300">Secure Management Portal</p>
+<body class="theme-body min-h-screen">
+<div class="min-h-screen flex flex-col">
+    <header class="navbar shadow-soft">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between gap-6 py-4">
+                <div class="flex items-center gap-4">
+                    <a href="<?= htmlspecialchars(url_to('dashboard')); ?>" class="flex items-center gap-3">
+                        <div class="brand-mark h-12 w-12 text-lg font-semibold">KS</div>
+                        <div class="leading-tight">
+                            <p class="text-lg font-semibold">KSRA MIS</p>
+                            <p class="brand-subtitle text-[11px] uppercase tracking-[0.32em]">Secure Management Portal</p>
+                        </div>
+                    </a>
+                    <button type="button" id="nav-toggle" class="nav-toggle md:hidden">Menu</button>
+                </div>
+                <nav id="desktop-nav" class="hidden md:flex items-center gap-6" aria-label="Primary navigation">
+                    <a href="<?= htmlspecialchars(url_to('dashboard')); ?>" class="nav-link">Dashboard</a>
+                    <div class="nav-dropdown" data-dropdown>
+                        <button type="button" class="nav-link" data-dropdown-trigger aria-haspopup="true" aria-expanded="false">
+                            Organizations
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" class="h-4 w-4">
+                                <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 10.94l3.71-3.71a.75.75 0 0 1 1.08 1.04l-4.25 4.25a.75.75 0 0 1-1.06 0L5.21 8.27a.75.75 0 0 1 .02-1.06z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                        <div class="nav-dropdown-menu" data-dropdown-menu>
+                            <a href="<?= htmlspecialchars(url_to('organizations/dra')); ?>">District Rifle Associations</a>
+                            <a href="<?= htmlspecialchars(url_to('organizations/ai')); ?>">Affiliated Institutions</a>
+                            <a href="<?= htmlspecialchars(url_to('organizations/club')); ?>">Clubs</a>
+                        </div>
+                    </div>
+                    <a href="<?= htmlspecialchars(url_to('memberships')); ?>" class="nav-link">Memberships</a>
+                    <a href="<?= htmlspecialchars(url_to('finance')); ?>" class="nav-link">Finance</a>
+                    <a href="<?= htmlspecialchars(url_to('elections')); ?>" class="nav-link">Elections</a>
+                </nav>
+                <div class="flex items-center gap-4">
+                    <div class="hidden sm:flex items-center gap-3">
+                        <img src="https://via.placeholder.com/48" alt="profile" class="h-11 w-11 rounded-full border-2 border-white/40 object-cover" />
+                        <div class="profile-summary">
+                            <span class="name text-sm"><?= htmlspecialchars($user['name'] ?? ''); ?></span>
+                            <span class="role"><?= htmlspecialchars($user['role'] ?? ''); ?></span>
+                        </div>
+                    </div>
+                    <div class="relative">
+                        <button type="button" id="profile-menu-button" class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/30 text-sm font-semibold text-white/90 hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60">
+                            <span>Account</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" class="h-4 w-4">
+                                <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 10.94l3.71-3.71a.75.75 0 0 1 1.08 1.04l-4.25 4.25a.75.75 0 0 1-1.06 0L5.21 8.27a.75.75 0 0 1 .02-1.06z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                        <div id="profile-menu" class="profile-dropdown hidden absolute right-0 mt-3">
+                            <a href="<?= htmlspecialchars(url_to('profile')); ?>">Profile</a>
+                            <form action="<?= htmlspecialchars(url_to('logout')); ?>" method="POST">
+                                <input type="hidden" name="_token" value="<?= htmlspecialchars($csrf ?? ''); ?>">
+                                <button type="submit">Logout</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        <nav class="flex-1 overflow-y-auto">
-            <ul class="py-4 space-y-2">
-                <li><a href="<?= htmlspecialchars(url_to('dashboard')); ?>" class="flex items-center px-6 py-2 hover:bg-slate-800 transition">Dashboard</a></li>
-                <li>
-                    <details class="group" open>
-                        <summary class="flex items-center px-6 py-2 cursor-pointer hover:bg-slate-800 transition">Organizations</summary>
-                        <ul class="pl-10 space-y-1 mt-1 text-sm text-slate-200">
-                            <li><a href="<?= htmlspecialchars(url_to('organizations/dra')); ?>" class="block py-1 hover:text-white">District Rifle Associations</a></li>
-                            <li><a href="<?= htmlspecialchars(url_to('organizations/ai')); ?>" class="block py-1 hover:text-white">Affiliated Institutions</a></li>
-                            <li><a href="<?= htmlspecialchars(url_to('organizations/club')); ?>" class="block py-1 hover:text-white">Clubs</a></li>
-                        </ul>
-                    </details>
-                </li>
-                <li><a href="<?= htmlspecialchars(url_to('memberships')); ?>" class="flex items-center px-6 py-2 hover:bg-slate-800 transition">Memberships</a></li>
-                <li><a href="<?= htmlspecialchars(url_to('finance')); ?>" class="flex items-center px-6 py-2 hover:bg-slate-800 transition">Finance</a></li>
-                <li><a href="<?= htmlspecialchars(url_to('elections')); ?>" class="flex items-center px-6 py-2 hover:bg-slate-800 transition">Elections</a></li>
-            </ul>
+        <nav id="mobile-nav" class="mobile-nav md:hidden hidden">
+            <div class="max-w-7xl mx-auto px-4 pb-4 space-y-4">
+                <a href="<?= htmlspecialchars(url_to('dashboard')); ?>" class="mobile-nav-link">Dashboard</a>
+                <details class="mobile-nav-group" data-mobile-group>
+                    <summary class="mobile-nav-link cursor-pointer">
+                        <span>Organizations</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" class="h-4 w-4">
+                            <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 10.94l3.71-3.71a.75.75 0 0 1 1.08 1.04l-4.25 4.25a.75.75 0 0 1-1.06 0L5.21 8.27a.75.75 0 0 1 .02-1.06z" clip-rule="evenodd" />
+                        </svg>
+                    </summary>
+                    <div class="pl-4 flex flex-col gap-2 text-sm text-white/90">
+                        <a href="<?= htmlspecialchars(url_to('organizations/dra')); ?>" class="hover:text-white">District Rifle Associations</a>
+                        <a href="<?= htmlspecialchars(url_to('organizations/ai')); ?>" class="hover:text-white">Affiliated Institutions</a>
+                        <a href="<?= htmlspecialchars(url_to('organizations/club')); ?>" class="hover:text-white">Clubs</a>
+                    </div>
+                </details>
+                <a href="<?= htmlspecialchars(url_to('memberships')); ?>" class="mobile-nav-link">Memberships</a>
+                <a href="<?= htmlspecialchars(url_to('finance')); ?>" class="mobile-nav-link">Finance</a>
+                <a href="<?= htmlspecialchars(url_to('elections')); ?>" class="mobile-nav-link">Elections</a>
+                <div class="mobile-nav-group text-white/90 text-sm space-y-3">
+                    <div class="flex items-center gap-3">
+                        <img src="https://via.placeholder.com/40" alt="profile" class="h-10 w-10 rounded-full border border-white/30 object-cover" />
+                        <div>
+                            <p class="font-semibold"><?= htmlspecialchars($user['name'] ?? ''); ?></p>
+                            <p class="text-xs uppercase tracking-wide text-white/70"><?= htmlspecialchars($user['role'] ?? ''); ?></p>
+                        </div>
+                    </div>
+                    <a href="<?= htmlspecialchars(url_to('profile')); ?>" class="mobile-nav-link">Profile</a>
+                    <form action="<?= htmlspecialchars(url_to('logout')); ?>" method="POST">
+                        <input type="hidden" name="_token" value="<?= htmlspecialchars($csrf ?? ''); ?>">
+                        <button type="submit" class="mobile-nav-link justify-start gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5">
+                                <path d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6A2.25 2.25 0 0 0 5.25 5.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15" />
+                                <path d="M12 9l3-3m0 0 3 3m-3-3v12" />
+                            </svg>
+                            Logout
+                        </button>
+                    </form>
+                </div>
+            </div>
         </nav>
-    </aside>
+    </header>
     <main class="flex-1">
-        <header class="bg-white border-b border-slate-200 px-8 py-4 flex items-center justify-between">
-            <div>
-                <h1 class="text-2xl font-semibold text-slate-800"><?= htmlspecialchars($heading ?? 'Dashboard'); ?></h1>
-                <p class="text-sm text-slate-500">Welcome back, <?= htmlspecialchars($user['name'] ?? ''); ?>!</p>
-            </div>
-            <div class="flex items-center space-x-4">
-                <div class="flex items-center space-x-3">
-                    <img src="https://via.placeholder.com/40" alt="profile" class="h-10 w-10 rounded-full object-cover border border-slate-200" />
-                    <div class="text-right">
-                        <p class="text-sm font-medium text-slate-700"><?= htmlspecialchars($user['name'] ?? ''); ?></p>
-                        <p class="text-xs text-slate-400 uppercase tracking-wide"><?= htmlspecialchars($user['role'] ?? ''); ?></p>
-                    </div>
-                </div>
-                <div class="relative">
-                    <button class="px-3 py-1.5 bg-slate-900 text-white rounded-md" onclick="document.getElementById('profile-menu').classList.toggle('hidden')">Profile</button>
-                    <div id="profile-menu" class="hidden absolute right-0 mt-2 w-40 bg-white border border-slate-200 rounded-md shadow-lg">
-                        <a href="<?= htmlspecialchars(url_to('profile')); ?>" class="block px-4 py-2 text-sm text-slate-600 hover:bg-slate-100">Profile</a>
-                        <form action="<?= htmlspecialchars(url_to('logout')); ?>" method="POST">
-                            <input type="hidden" name="_token" value="<?= htmlspecialchars($csrf ?? ''); ?>">
-                            <button type="submit" class="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-slate-100">Logout</button>
-                        </form>
-                    </div>
+        <div class="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-8">
+                <div>
+                    <h1 class="text-3xl font-semibold section-heading leading-tight"><?= htmlspecialchars($heading ?? 'Dashboard'); ?></h1>
+                    <p class="text-sm text-muted mt-2">Welcome back, <?= htmlspecialchars($user['name'] ?? ''); ?>.</p>
                 </div>
             </div>
-        </header>
-        <section class="p-8">
-            <?= $slot ?? '' ?>
-        </section>
+            <div class="space-y-8">
+                <?= $slot ?? '' ?>
+            </div>
+        </div>
     </main>
 </div>
 <script>
-    document.addEventListener('click', function (event) {
-        const menu = document.getElementById('profile-menu');
-        if (!menu) return;
-        if (!event.target.closest('#profile-menu') && !event.target.closest('button')) {
-            menu.classList.add('hidden');
+    document.addEventListener('DOMContentLoaded', function () {
+        const navToggle = document.getElementById('nav-toggle');
+        const mobileNav = document.getElementById('mobile-nav');
+        const profileButton = document.getElementById('profile-menu-button');
+        const profileMenu = document.getElementById('profile-menu');
+        const dropdowns = document.querySelectorAll('[data-dropdown]');
+
+        function closeProfileMenu(event) {
+            if (!profileMenu || !profileButton) {
+                return;
+            }
+            if (event && (profileMenu.contains(event.target) || profileButton.contains(event.target))) {
+                return;
+            }
+            profileMenu.classList.add('hidden');
+            profileButton.setAttribute('aria-expanded', 'false');
         }
+
+        if (navToggle && mobileNav) {
+            navToggle.addEventListener('click', function () {
+                mobileNav.classList.toggle('hidden');
+                navToggle.setAttribute('aria-expanded', mobileNav.classList.contains('hidden') ? 'false' : 'true');
+            });
+        }
+
+        if (profileButton && profileMenu) {
+            profileButton.addEventListener('click', function () {
+                profileMenu.classList.toggle('hidden');
+                profileButton.setAttribute('aria-expanded', profileMenu.classList.contains('hidden') ? 'false' : 'true');
+            });
+        }
+
+        dropdowns.forEach(function (dropdown) {
+            const trigger = dropdown.querySelector('[data-dropdown-trigger]');
+            const menu = dropdown.querySelector('[data-dropdown-menu]');
+            if (!trigger || !menu) {
+                return;
+            }
+
+            trigger.addEventListener('click', function (event) {
+                event.preventDefault();
+                const isOpen = dropdown.classList.toggle('open');
+                trigger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+            });
+        });
+
+        document.addEventListener('click', function (event) {
+            if (mobileNav && !mobileNav.classList.contains('hidden') && navToggle && !navToggle.contains(event.target) && !mobileNav.contains(event.target)) {
+                mobileNav.classList.add('hidden');
+                navToggle.setAttribute('aria-expanded', 'false');
+            }
+
+            dropdowns.forEach(function (dropdown) {
+                const trigger = dropdown.querySelector('[data-dropdown-trigger]');
+                if (trigger && !dropdown.contains(event.target)) {
+                    dropdown.classList.remove('open');
+                    trigger.setAttribute('aria-expanded', 'false');
+                }
+            });
+
+            if (profileMenu && !profileMenu.classList.contains('hidden')) {
+                closeProfileMenu(event);
+            }
+        });
+
+        window.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') {
+                if (mobileNav && !mobileNav.classList.contains('hidden')) {
+                    mobileNav.classList.add('hidden');
+                    if (navToggle) {
+                        navToggle.setAttribute('aria-expanded', 'false');
+                    }
+                }
+                if (profileMenu && !profileMenu.classList.contains('hidden')) {
+                    profileMenu.classList.add('hidden');
+                    if (profileButton) {
+                        profileButton.setAttribute('aria-expanded', 'false');
+                    }
+                }
+                dropdowns.forEach(function (dropdown) {
+                    const trigger = dropdown.querySelector('[data-dropdown-trigger]');
+                    if (trigger) {
+                        dropdown.classList.remove('open');
+                        trigger.setAttribute('aria-expanded', 'false');
+                    }
+                });
+            }
+        });
     });
 </script>
 </body>
