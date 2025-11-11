@@ -28,7 +28,7 @@ class User extends Model
 
     public function create(array $data): int
     {
-        $stmt = $this->db->prepare('INSERT INTO users (name, email, phone, password, role, status, organization_id, created_at, updated_at) VALUES (:name, :email, :phone, :password, :role, :status, :organization_id, NOW(), NOW())');
+        $stmt = $this->db->prepare('INSERT INTO users (name, email, phone, password, role, status, organization_id, photo_path, created_at, updated_at) VALUES (:name, :email, :phone, :password, :role, :status, :organization_id, :photo_path, NOW(), NOW())');
         $stmt->execute([
             'name' => $data['name'],
             'email' => $data['email'],
@@ -37,6 +37,7 @@ class User extends Model
             'role' => $data['role'],
             'status' => $data['status'] ?? 'active',
             'organization_id' => $data['organization_id'] ?? null,
+            'photo_path' => $data['photo_path'] ?? null,
         ]);
         return (int) $this->db->lastInsertId();
     }
@@ -57,7 +58,7 @@ class User extends Model
         $fields = [];
         $params = ['id' => $id];
 
-        foreach (['name', 'email', 'phone', 'password', 'role', 'status', 'organization_id'] as $field) {
+        foreach (['name', 'email', 'phone', 'password', 'role', 'status', 'organization_id', 'photo_path'] as $field) {
             if (array_key_exists($field, $data)) {
                 $fields[] = sprintf('%s = :%s', $field, $field);
                 $params[$field] = $data[$field];
