@@ -13,10 +13,20 @@ class Organization extends Model
     public const TYPE_INSTITUTION = 'ai';
     public const TYPE_CLUB = 'club';
 
-    public function allByType(string $type): array
+    public function allByType(string $type, ?int $parentId = null): array
     {
-        $stmt = $this->db->prepare('SELECT * FROM organizations WHERE type = :type ORDER BY name');
-        $stmt->execute(['type' => $type]);
+        $sql = 'SELECT * FROM organizations WHERE type = :type';
+        $params = ['type' => $type];
+
+        if ($parentId !== null) {
+            $sql .= ' AND parent_id = :parent_id';
+            $params['parent_id'] = $parentId;
+        }
+
+        $sql .= ' ORDER BY name';
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
         $organizations = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return array_map(function ($org) {
             $org['hash_id'] = Hasher::encode((int) $org['id']);

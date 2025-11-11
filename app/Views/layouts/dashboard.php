@@ -1,3 +1,22 @@
+<?php
+use App\Models\User;
+
+$role = $user['role'] ?? '';
+$profilePhoto = !empty($user['photo_path'] ?? '') ? asset_url($user['photo_path']) : 'https://via.placeholder.com/48';
+$organizationLinks = [];
+
+if (in_array($role, [User::ROLE_SUPER_ADMIN, User::ROLE_STATE_ADMIN], true)) {
+    $organizationLinks = [
+        ['label' => 'District Rifle Associations', 'url' => url_to('organizations/dra')],
+        ['label' => 'Affiliated Institutions', 'url' => url_to('organizations/ai')],
+        ['label' => 'Clubs', 'url' => url_to('organizations/club')],
+    ];
+} elseif ($role === User::ROLE_DISTRICT_ADMIN) {
+    $organizationLinks = [
+        ['label' => 'Clubs', 'url' => url_to('organizations/club')],
+    ];
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -35,26 +54,28 @@
                 </div>
                 <nav id="desktop-nav" class="hidden md:flex items-center gap-6" aria-label="Primary navigation">
                     <a href="<?= htmlspecialchars(url_to('dashboard')); ?>" class="nav-link">Dashboard</a>
-                    <div class="nav-dropdown relative" data-dropdown>
-                        <button type="button" class="nav-link" data-dropdown-trigger aria-haspopup="true" aria-expanded="false">
-                            Organizations
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" class="h-4 w-4">
-                                <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 10.94l3.71-3.71a.75.75 0 0 1 1.08 1.04l-4.25 4.25a.75.75 0 0 1-1.06 0L5.21 8.27a.75.75 0 0 1 .02-1.06z" clip-rule="evenodd" />
-                            </svg>
-                        </button>
-                        <div class="nav-dropdown-menu" data-dropdown-menu>
-                            <a href="<?= htmlspecialchars(url_to('organizations/dra')); ?>">District Rifle Associations</a>
-                            <a href="<?= htmlspecialchars(url_to('organizations/ai')); ?>">Affiliated Institutions</a>
-                            <a href="<?= htmlspecialchars(url_to('organizations/club')); ?>">Clubs</a>
+                    <?php if (!empty($organizationLinks)): ?>
+                        <div class="nav-dropdown relative" data-dropdown>
+                            <button type="button" class="nav-link" data-dropdown-trigger aria-haspopup="true" aria-expanded="false">
+                                Organizations
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" class="h-4 w-4">
+                                    <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 10.94l3.71-3.71a.75.75 0 0 1 1.08 1.04l-4.25 4.25a.75.75 0 0 1-1.06 0L5.21 8.27a.75.75 0 0 1 .02-1.06z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                            <div class="nav-dropdown-menu" data-dropdown-menu>
+                                <?php foreach ($organizationLinks as $link): ?>
+                                    <a href="<?= htmlspecialchars($link['url']); ?>"><?= htmlspecialchars($link['label']); ?></a>
+                                <?php endforeach; ?>
+                            </div>
                         </div>
-                    </div>
+                    <?php endif; ?>
                     <a href="<?= htmlspecialchars(url_to('memberships')); ?>" class="nav-link">Memberships</a>
                     <a href="<?= htmlspecialchars(url_to('finance')); ?>" class="nav-link">Finance</a>
                     <a href="<?= htmlspecialchars(url_to('elections')); ?>" class="nav-link">Elections</a>
                 </nav>
                 <div class="flex items-center gap-4">
                     <div class="hidden sm:flex items-center gap-3">
-                        <img src="https://via.placeholder.com/48" alt="profile" class="h-11 w-11 rounded-full border-2 border-white/40 object-cover" />
+                        <img src="<?= htmlspecialchars($profilePhoto); ?>" alt="profile" class="h-11 w-11 rounded-full border-2 border-white/40 object-cover" />
                         <div class="profile-summary">
                             <span class="name text-sm"><?= htmlspecialchars($user['name'] ?? ''); ?></span>
                             <span class="role"><?= htmlspecialchars($user['role'] ?? ''); ?></span>
@@ -81,25 +102,27 @@
         <nav id="mobile-nav" class="mobile-nav md:hidden hidden">
             <div class="max-w-7xl mx-auto px-4 pb-4 space-y-4">
                 <a href="<?= htmlspecialchars(url_to('dashboard')); ?>" class="mobile-nav-link">Dashboard</a>
-                <details class="mobile-nav-group" data-mobile-group>
-                    <summary class="mobile-nav-link cursor-pointer">
-                        <span>Organizations</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" class="h-4 w-4">
-                            <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 10.94l3.71-3.71a.75.75 0 0 1 1.08 1.04l-4.25 4.25a.75.75 0 0 1-1.06 0L5.21 8.27a.75.75 0 0 1 .02-1.06z" clip-rule="evenodd" />
-                        </svg>
-                    </summary>
-                    <div class="pl-4 flex flex-col gap-2 text-sm text-white/90">
-                        <a href="<?= htmlspecialchars(url_to('organizations/dra')); ?>" class="hover:text-white">District Rifle Associations</a>
-                        <a href="<?= htmlspecialchars(url_to('organizations/ai')); ?>" class="hover:text-white">Affiliated Institutions</a>
-                        <a href="<?= htmlspecialchars(url_to('organizations/club')); ?>" class="hover:text-white">Clubs</a>
-                    </div>
-                </details>
+                <?php if (!empty($organizationLinks)): ?>
+                    <details class="mobile-nav-group" data-mobile-group>
+                        <summary class="mobile-nav-link cursor-pointer">
+                            <span>Organizations</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" class="h-4 w-4">
+                                <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 10.94l3.71-3.71a.75.75 0 0 1 1.08 1.04l-4.25 4.25a.75.75 0 0 1-1.06 0L5.21 8.27a.75.75 0 0 1 .02-1.06z" clip-rule="evenodd" />
+                            </svg>
+                        </summary>
+                        <div class="pl-4 flex flex-col gap-2 text-sm text-white/90">
+                            <?php foreach ($organizationLinks as $link): ?>
+                                <a href="<?= htmlspecialchars($link['url']); ?>" class="hover:text-white"><?= htmlspecialchars($link['label']); ?></a>
+                            <?php endforeach; ?>
+                        </div>
+                    </details>
+                <?php endif; ?>
                 <a href="<?= htmlspecialchars(url_to('memberships')); ?>" class="mobile-nav-link">Memberships</a>
                 <a href="<?= htmlspecialchars(url_to('finance')); ?>" class="mobile-nav-link">Finance</a>
                 <a href="<?= htmlspecialchars(url_to('elections')); ?>" class="mobile-nav-link">Elections</a>
                 <div class="mobile-nav-group text-white/90 text-sm space-y-3">
                     <div class="flex items-center gap-3">
-                        <img src="https://via.placeholder.com/40" alt="profile" class="h-10 w-10 rounded-full border border-white/30 object-cover" />
+                        <img src="<?= htmlspecialchars($profilePhoto); ?>" alt="profile" class="h-10 w-10 rounded-full border border-white/30 object-cover" />
                         <div>
                             <p class="font-semibold"><?= htmlspecialchars($user['name'] ?? ''); ?></p>
                             <p class="text-xs uppercase tracking-wide text-white/70"><?= htmlspecialchars($user['role'] ?? ''); ?></p>

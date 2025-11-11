@@ -29,14 +29,14 @@ class OrganizationController extends Controller
 
         $type = in_array($type, $this->allowedTypes, true) ? $type : Organization::TYPE_DISTRICT;
 
-        if (!$this->authorized($user)) {
+        if (!$this->authorized($user, $type)) {
             http_response_code(403);
             echo 'Unauthorized access.';
             return;
         }
 
         $orgModel = new Organization();
-        $organizations = $orgModel->allByType($type);
+        $organizations = $this->organizationsForUser($user, $type, $orgModel);
 
         $this->view('dashboard/organizations', [
             'user' => $user,
@@ -63,7 +63,7 @@ class OrganizationController extends Controller
 
         $type = in_array($type, $this->allowedTypes, true) ? $type : Organization::TYPE_DISTRICT;
 
-        if (!$this->authorized($user)) {
+        if (!$this->authorized($user, $type)) {
             http_response_code(403);
             echo 'Unauthorized access.';
             return;
@@ -74,6 +74,17 @@ class OrganizationController extends Controller
         $phone = Validator::sanitize($_POST['phone'] ?? '');
         $address = Validator::sanitize($_POST['address'] ?? '');
         $parent = $_POST['parent_id'] ?? null;
+
+        if (($user['role'] ?? null) === User::ROLE_DISTRICT_ADMIN && $type === Organization::TYPE_CLUB) {
+            $districtId = isset($user['organization_id']) ? (int) $user['organization_id'] : 0;
+            if ($districtId <= 0) {
+                $this->flash('error', 'Your account is not linked to a district. Please contact an administrator.');
+                header('Location: ' . \url_to('organizations/' . rawurlencode($type)));
+                exit;
+            }
+
+            $parent = $districtId;
+        }
 
         if (!Validator::required($name)) {
             $this->flash('error', 'Name is required.');
@@ -106,13 +117,13 @@ class OrganizationController extends Controller
 
         $type = in_array($type, $this->allowedTypes, true) ? $type : Organization::TYPE_DISTRICT;
 
-        if (!$this->authorized($user)) {
+        if (!$this->authorized($user, $type)) {
             http_response_code(403);
             echo 'Unauthorized access.';
             return;
         }
 
-        $organization = $this->findOrganization($type, $hashId);
+        $organization = $this->findOrganization($type, $hashId, $user);
         if (!$organization) {
             $this->flash('error', 'Organization not found.');
             header('Location: ' . \url_to('organizations/' . rawurlencode($type)));
@@ -156,13 +167,13 @@ class OrganizationController extends Controller
 
         $type = in_array($type, $this->allowedTypes, true) ? $type : Organization::TYPE_DISTRICT;
 
-        if (!$this->authorized($user)) {
+        if (!$this->authorized($user, $type)) {
             http_response_code(403);
             echo 'Unauthorized access.';
             return;
         }
 
-        $organization = $this->findOrganization($type, $hashId);
+        $organization = $this->findOrganization($type, $hashId, $user);
         if (!$organization) {
             $this->flash('error', 'Organization not found.');
             header('Location: ' . \url_to('organizations/' . rawurlencode($type)));
@@ -209,13 +220,13 @@ class OrganizationController extends Controller
 
         $type = in_array($type, $this->allowedTypes, true) ? $type : Organization::TYPE_DISTRICT;
 
-        if (!$this->authorized($user)) {
+        if (!$this->authorized($user, $type)) {
             http_response_code(403);
             echo 'Unauthorized access.';
             return;
         }
 
-        $organization = $this->findOrganization($type, $hashId);
+        $organization = $this->findOrganization($type, $hashId, $user);
         if (!$organization) {
             $this->flash('error', 'Organization not found.');
             header('Location: ' . \url_to('organizations/' . rawurlencode($type)));
@@ -247,13 +258,13 @@ class OrganizationController extends Controller
 
         $type = in_array($type, $this->allowedTypes, true) ? $type : Organization::TYPE_DISTRICT;
 
-        if (!$this->authorized($user)) {
+        if (!$this->authorized($user, $type)) {
             http_response_code(403);
             echo 'Unauthorized access.';
             return;
         }
 
-        $organization = $this->findOrganization($type, $hashId);
+        $organization = $this->findOrganization($type, $hashId, $user);
         if (!$organization) {
             $this->flash('error', 'Organization not found.');
             header('Location: ' . \url_to('organizations/' . rawurlencode($type)));
@@ -326,13 +337,13 @@ class OrganizationController extends Controller
 
         $type = in_array($type, $this->allowedTypes, true) ? $type : Organization::TYPE_DISTRICT;
 
-        if (!$this->authorized($user)) {
+        if (!$this->authorized($user, $type)) {
             http_response_code(403);
             echo 'Unauthorized access.';
             return;
         }
 
-        $organization = $this->findOrganization($type, $hashId);
+        $organization = $this->findOrganization($type, $hashId, $user);
         if (!$organization) {
             $this->flash('error', 'Organization not found.');
             header('Location: ' . \url_to('organizations/' . rawurlencode($type)));
@@ -440,12 +451,35 @@ class OrganizationController extends Controller
         exit;
     }
 
-    private function authorized(array $user): bool
+    private function authorized(array $user, string $type): bool
     {
-        return in_array($user['role'] ?? '', [User::ROLE_SUPER_ADMIN, User::ROLE_STATE_ADMIN], true);
+        $role = $user['role'] ?? '';
+        if (in_array($role, [User::ROLE_SUPER_ADMIN, User::ROLE_STATE_ADMIN], true)) {
+            return true;
+        }
+
+        if ($role === User::ROLE_DISTRICT_ADMIN) {
+            return $type === Organization::TYPE_CLUB;
+        }
+
+        return false;
     }
 
-    private function findOrganization(string $type, string $hashId): ?array
+    private function organizationsForUser(array $user, string $type, Organization $orgModel): array
+    {
+        if (($user['role'] ?? null) === User::ROLE_DISTRICT_ADMIN && $type === Organization::TYPE_CLUB) {
+            $districtId = isset($user['organization_id']) ? (int) $user['organization_id'] : 0;
+            if ($districtId > 0) {
+                return $orgModel->allByType($type, $districtId);
+            }
+
+            return [];
+        }
+
+        return $orgModel->allByType($type);
+    }
+
+    private function findOrganization(string $type, string $hashId, array $user): ?array
     {
         $decoded = Hasher::decode($hashId);
         if (!$decoded) {
@@ -457,6 +491,13 @@ class OrganizationController extends Controller
 
         if (!$organization || $organization['type'] !== $type) {
             return null;
+        }
+
+        if (($user['role'] ?? null) === User::ROLE_DISTRICT_ADMIN && $type === Organization::TYPE_CLUB) {
+            $districtId = isset($user['organization_id']) ? (int) $user['organization_id'] : 0;
+            if ($districtId <= 0 || (int) ($organization['parent_id'] ?? 0) !== $districtId) {
+                return null;
+            }
         }
 
         return $organization;

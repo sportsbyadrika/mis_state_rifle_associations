@@ -51,6 +51,7 @@ class ProfileController extends Controller
         $currentPassword = $_POST['current_password'] ?? '';
         $newPassword = $_POST['password'] ?? '';
         $confirmPassword = $_POST['password_confirmation'] ?? '';
+        $photoData = trim($_POST['photo_data'] ?? '');
 
         $errors = [];
         if (!Validator::required($name)) {
@@ -68,6 +69,15 @@ class ProfileController extends Controller
             'email' => $email,
             'phone' => $phone !== '' ? $phone : null,
         ];
+
+        if ($photoData !== '') {
+            $storedPhoto = $this->storeCroppedPhoto($photoData, (int) $freshUser['id'], $freshUser['photo_path'] ?? null);
+            if ($storedPhoto === null) {
+                $errors[] = 'We could not process the uploaded photo. Please try again with a different image.';
+            } else {
+                $updateData['photo_path'] = $storedPhoto;
+            }
+        }
 
         if ($newPassword !== '' || $confirmPassword !== '' || $currentPassword !== '') {
             if (!password_verify($currentPassword, $freshUser['password'])) {
@@ -93,6 +103,7 @@ class ProfileController extends Controller
                     'name' => $name,
                     'email' => $email,
                     'phone' => $phone,
+                    'photo_path' => $freshUser['photo_path'] ?? null,
                 ]),
                 'csrf' => Csrf::token(),
                 'errors' => $errors,
@@ -113,5 +124,84 @@ class ProfileController extends Controller
             'csrf' => Csrf::token(),
             'status' => 'Profile updated successfully.',
         ]);
+}
+
+    private function storeCroppedPhoto(string $photoData, int $userId, ?string $currentPath): ?string
+    {
+        if (!str_starts_with($photoData, 'data:image/')) {
+            return null;
+        }
+
+        $commaPosition = strpos($photoData, ',');
+        if ($commaPosition === false) {
+            return null;
+        }
+
+        $metadata = substr($photoData, 0, $commaPosition + 1);
+        if (!preg_match('/^data:image\/(png|jpe?g);base64,$/i', $metadata)) {
+            return null;
+        }
+
+        $base64 = substr($photoData, $commaPosition + 1);
+        $binary = base64_decode($base64, true);
+        if ($binary === false || strlen($binary) > 5 * 1024 * 1024) {
+            return null;
+        }
+
+        $image = imagecreatefromstring($binary);
+        if ($image === false) {
+            return null;
+        }
+
+        $width = imagesx($image);
+        $height = imagesy($image);
+        if ($width === 0 || $height === 0) {
+            imagedestroy($image);
+            return null;
+        }
+
+        $targetSize = 400;
+        $canvas = imagecreatetruecolor($targetSize, $targetSize);
+        if ($canvas === false) {
+            imagedestroy($image);
+            return null;
+        }
+
+        $background = imagecolorallocate($canvas, 255, 255, 255);
+        imagefill($canvas, 0, 0, $background);
+
+        $resampled = imagecopyresampled($canvas, $image, 0, 0, 0, 0, $targetSize, $targetSize, $width, $height);
+        if (!$resampled) {
+            imagedestroy($image);
+            imagedestroy($canvas);
+            return null;
+        }
+
+        $directory = __DIR__ . '/../../public/uploads/profile';
+        if (!is_dir($directory) && !mkdir($directory, 0755, true) && !is_dir($directory)) {
+            imagedestroy($image);
+            imagedestroy($canvas);
+            return null;
+        }
+
+        $filename = sprintf('user_%d_%s.jpg', $userId, uniqid('', true));
+        $path = $directory . '/' . $filename;
+
+        $saved = imagejpeg($canvas, $path, 90);
+        imagedestroy($image);
+        imagedestroy($canvas);
+
+        if (!$saved) {
+            return null;
+        }
+
+        if ($currentPath) {
+            $absoluteCurrent = __DIR__ . '/../../public/' . ltrim($currentPath, '/');
+            if (is_file($absoluteCurrent)) {
+                @unlink($absoluteCurrent);
+            }
+        }
+
+        return 'uploads/profile/' . $filename;
     }
 }
